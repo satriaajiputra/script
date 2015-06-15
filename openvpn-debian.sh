@@ -217,5 +217,5 @@ END
 	echo "Selesai!"
 	echo ""
 	echo "Sekarang config openvpn anda berada di folder root ~/ovpn-$CLIENT.tar.gz"
-	cp -rf /roor/ovpn-client.tar.gz /home/vps/public_html/client.tar.gz
+	cp -rf /root/ovpn-client.tar.gz /home/vps/public_html/client.tar.gz
 fi
