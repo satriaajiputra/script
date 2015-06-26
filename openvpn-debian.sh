@@ -4,7 +4,6 @@
 # This script will only work on Debian-based systems. It isn't bulletproof but
 # it will probably work if you simply want to setup a VPN on your Debian/Ubuntu
 # VPS. It has been designed to be as unobtrusive and universal as possible.
-kl
 if [ $USER != 'root' ]; then
 	echo "Maaf, untuk menjalankan script, kamu harus login sebagai root"
 	exit
@@ -210,12 +209,13 @@ END
 	cat ca.crt >> $CLIENT.ovpn
 	echo -e "</ca>\n" >> $CLIENT.ovpn
 	
-	tar -czf ../ovpn-$CLIENT.tar.gz $CLIENT.conf ca.crt $CLIENT.ovpn
+	zip -czf ../ovpn-$CLIENT.zip $CLIENT.conf ca.crt $CLIENT.ovpn
 	cd ~/
 	rm -rf ovpn-$CLIENT
 	echo ""
 	echo "Selesai!"
 	echo ""
 	echo "Sekarang config openvpn anda berada di folder root ~/ovpn-$CLIENT.tar.gz"
-	cp -rf /root/ovpn-client.tar.gz /home/vps/public_html/client.tar.gz
+	cp -rf /root/ovpn-$CLIENT.zip /home/vps/public_html/$CLIENT.zip
+	rm -rf /root/openvpn.sh
 fi
