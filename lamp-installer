@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# only for ubuntu
-
 if [[ $USER != 'root' ]]; then
 	echo "Sorry.. Need root access for launch this script."
 	exit
@@ -10,11 +8,14 @@ fi
 cd /etc/apt
 mv sources.list sources.txt
 wget -O sources.list "https://raw.githubusercontent.com/satriaajiputra/script/master/sources.list"
-cd 
+cd
 
 # update and install some app
 apt-get update -y && apt-get upgrade -y
-apt-get install pwgen apache2 zip unzip except -y
+apt-get install pwgen apache2 zip unzip expect -y
+
+# set password for mysql-server
+GLOBAL_PASSWD=`pwgen -s 16 1`
 
 a2enmod rewrite
 
@@ -26,9 +27,6 @@ cd /home
 ln -s /var/www/html
 cd
 
-# set password for mysql-server
-GLOBAL_PASSWD=`pwgen -s 16 1`
-
 # install screenfetch
 cd /usr/bin
 wget -O screenfetch "https://raw.githubusercontent.com/KittyKatt/screenFetch/master/screenfetch-dev"
@@ -38,30 +36,32 @@ echo "clear" >> .profile
 echo "screenfetch" >> .profile
 
 # set password to mysql
-echo "mysql-server mysql-server/root_password password $GLOBAL_PASSWD" | sudo debconf-set-selections
-echo "mysql-server mysql-server/root_password_again password $GLOBAL_PASSWD" | sudo debconf-set-selections
+# echo "mysql-server mysql-server/root_password password $GLOBAL_PASSWD" | sudo debconf-set-selections
+# echo "mysql-server mysql-server/root_password_again password $GLOBAL_PASSWD" | sudo debconf-set-selections
 
 apt-get install mysql-server -y
 
-SECURE_MYSQL=$(expect -c "
-set timeout 10
-spawn mysql_secure_installation
-expect \"Enter current password for root (enter for none):\"
-send \"$GLOBAL_PASSWD\r\"
-expect \"Change the root password?\"
-send \"n\r\"
-expect \"Remove anonymous users?\"
-send \"y\r\"
-expect \"Disallow root login remotely?\"
-send \"y\r\"
-expect \"Remove test database and access to it?\"
-send \"y\r\"
-expect \"Reload privilege tables now?\"
-send \"y\r\"
-expect eof
-")
+# SECURE_MYSQL=$(expect -c "
+# set timeout 10
+# spawn mysql_secure_installation
+# expect \"Enter current password for root (enter for none):\"
+# send \"$GLOBAL_PASSWD\r\"
+# expect \"Change the root password?\"
+# send \"n\r\"
+# expect \"Remove anonymous users?\"
+# send \"y\r\"
+# expect \"Disallow root login remotely?\"
+# send \"y\r\"
+# expect \"Remove test database and access to it?\"
+# send \"y\r\"
+# expect \"Reload privilege tables now?\"
+# send \"y\r\"
+# expect eof
+# ")
 
-echo "$SECURE_MYSQL"
+# echo "$SECURE_MYSQL"
+
+mysql_secure_installation
 
 apt-get -y purge expect
 
@@ -71,6 +71,9 @@ apt-get update -y
 apt-get install -y php7.0 libapache2-mod-php7.0 php7.0-cli php7.0-common php7.0-mbstring php7.0-gd php7.0-intl php7.0-xml php7.0-mysql php7.0-mcrypt php7.0-zip
 
 echo "<?php phpinfo(); ?>" > /var/www/html/info.php
+
+service apache2 restart
+service mysql restart
 
 cd /var/www/html
 wget -O phpmyadmin.zip "https://files.phpmyadmin.net/phpMyAdmin/4.7.1/phpMyAdmin-4.7.1-all-languages.zip"
@@ -93,12 +96,6 @@ echo "2. Apache2" | tee -a log.txt
 echo "3. phpMyadmin" | tee -a log.txt
 echo "4. MySQL Server" | tee -a log.txt
 echo "5. Screenfetch" | tee -a log.txt
-echo "===============" | tee -a log.txt
-echo "===============" | tee -a log.txt
-echo "Mysql Login Information:" | tee -a log.txt
-echo "===============" | tee -a log.txt
-echo "Username: root" | tee -a log.txt
-echo "Password: $GLOBAL_PASSWD" | tee -a log.txt
 echo "===============" | tee -a log.txt
 echo "===============" | tee -a log.txt
 echo "Look at log.txt file" | tee -a log.txt
