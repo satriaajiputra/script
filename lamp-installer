@@ -83,7 +83,7 @@ mv phpMyAdmin-4.7.1-all-languages phpMyAdmin
 # install composer
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
-
+cd
 apt-get update
 clear
 
