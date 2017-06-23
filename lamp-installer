@@ -12,10 +12,11 @@ cd
 
 # update and install some app
 apt-get update -y && apt-get upgrade -y
-apt-get install pwgen apache2 zip unzip expect -y
+# apt-get install pwgen apache2 zip unzip expect -y
+apt-get install apache2 zip unzip -y
 
 # set password for mysql-server
-GLOBAL_PASSWD=`pwgen -s 16 1`
+# GLOBAL_PASSWD=`pwgen -s 16 1`
 
 a2enmod rewrite
 
@@ -63,7 +64,7 @@ apt-get install mysql-server -y
 
 mysql_secure_installation
 
-apt-get -y purge expect
+# apt-get -y purge expect
 
 # select php
 sudo add-apt-repository ppa:ondrej/php -y
